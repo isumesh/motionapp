@@ -1,0 +1,6 @@
+module Pods_motionapp_motionappTests {
+  umbrella header "Pods-motionapp-motionappTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
