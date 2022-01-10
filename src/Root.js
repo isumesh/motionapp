@@ -1,28 +1,20 @@
-/**
- * Bci Visitas -  React Native App
- *
- * @format
- * @flow
- */
+import React, { Component } from "react";
+import { View } from "react-native";
 
-import React, {Component} from 'react';
-import {View} from 'react-native';
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/lib/integration/react";
 
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/lib/integration/react';
+import configureStore from "./store/configureStore";
+import JailMonkey from "jail-monkey";
+import App from "./App";
+import Loading from "./components/Loading";
 
-import configureStore from './store/configureStore';
-import JailMonkey from 'jail-monkey';
-import App from './App';
-import Loading from './components/Loading';
+import _ from "lodash";
+import { NavigationContainer } from "@react-navigation/native";
 
-import _ from 'lodash';
+const { store, persistor } = configureStore();
 
-const {store, persistor} = configureStore();
-
-type Props = {};
-
-export default class Root extends Component<Props> {
+export default class Root extends Component {
   state = {
     isSafe: null,
     hasError: null,
@@ -30,35 +22,35 @@ export default class Root extends Component<Props> {
 
   componentWillMount() {
     try {
-      const {trustFall} = JailMonkey;
+      const { trustFall } = JailMonkey;
 
       this.setState({
         isSafe: trustFall(),
         hasError: false,
       });
     } catch (e) {
-      this.setState({hasError: true});
+      this.setState({ hasError: true });
     }
   }
 
   requestingSafety = () => {
-    const {isSafe} = this.state;
+    const { isSafe } = this.state;
 
     return _.isNull(isSafe);
   };
 
   isSafeDevice = () => {
-    const {isSafe} = this.state;
+    const { isSafe } = this.state;
 
     return isSafe;
   };
 
   render() {
-    const {hasError} = this.state;
+    const { hasError } = this.state;
     console.disableYellowBox = true;
     if (this.requestingSafety()) {
       return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Loading />
         </View>
       );
@@ -68,7 +60,9 @@ export default class Root extends Component<Props> {
       return (
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <App />
+            <NavigationContainer>
+              <App />
+            </NavigationContainer>
           </PersistGate>
         </Provider>
       );

@@ -1,41 +1,27 @@
-import React, {Component} from 'react';
-import {StatusBar, View, BackHandler} from 'react-native';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { Component } from "react";
+import { StatusBar, View } from "react-native";
 
-import {AppNavigator} from './AppNavigator';
+import { AppNavigator } from "./AppNavigator";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LoginScreen from "./screens/LoginScreen";
 
-type Props = {};
+const Stack = createNativeStackNavigator();
 
-class App extends Component<Props> {
+class App extends Component {
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" />
-        <AppNavigator />
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
       </View>
     );
   }
 }
 
-const mapStateToProps = state => {
-  const {
-    env: {API_ENV},
-  } = process;
-
-  return {
-    currentUser:
-      API_ENV === 'dev' || API_ENV === 'cert'
-        ? state.currentUser.profile
-        : state.auth.profile,
-    loggedIn: state.auth.loggedIn,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    actions: bindActionCreators({}, dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
